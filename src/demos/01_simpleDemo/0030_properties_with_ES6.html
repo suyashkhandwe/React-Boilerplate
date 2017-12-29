@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Properties - ES6</title>
+    <script src="../../js/react.min.js"></script>
+    <script src="../../js/react-dom.min.js"></script>
+    <script src="../../js/browser.min.js"></script>
+</head>
+<body>
+
+    <div id="container"></div>
+
+    <script type="text/babel">
+
+    class Movie extends React.Component {
+      render() {
+        return (
+          <div>
+            <h1>Title : {this.props.title}</h1>
+            <h2>Genre : {this.props.genre}</h2>
+          </div>
+        );
+      }
+    }
+        ReactDOM.render(
+          <div>
+            <Movie title="Avatar" genre="SciFi" />
+            <Movie title="Titanic" genre="Romance" />
+            <Movie title="SpiderMan" genre="Fiction" />
+          </div>, document.getElementById('container'));
+    </script>
+</body>
+</html>

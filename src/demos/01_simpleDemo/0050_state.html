@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>State</title>
+    <script src="../../js/react.min.js"></script>
+    <script src="../../js/react-dom.min.js"></script>
+    <script src="../../js/browser.min.js"></script>
+</head>
+<body>
+
+    <div id="container"></div>
+    <div>
+      <a href="https://www.youtube.com/watch?v=5tT8FXeE1Y8&index=7&list=PL6gx4Cwl9DGBuKtLgPR_zWYnrwv-JllpA">
+        Same code without ES6
+      </a>
+    </div>
+
+    <script type="text/babel">
+
+      class CheckBox extends React.Component {
+        constructor(props){
+          super(props);
+          this.state = { checked : true };
+
+          //Bind 'this' with the method. This can also be done inline at the time of calling the method
+          this.checkboxChanged = this.checkboxChanged.bind(this);
+        }
+
+        checkboxChanged() {
+          this.setState({ checked : !this.state.checked });
+        }
+
+        render() {
+          var message;
+          if(this.state.checked){
+            message = "checked";
+          }
+          else{
+            message = "unchecked";
+          }
+
+          //defaultChecked={this.state.checked}
+          //This just ensures that the checkbox initial state is same as the state of the class
+
+          return(
+            <div>
+              <input type="checkbox" onChange={this.checkboxChanged} defaultChecked={this.state.checked} />
+              <h3>Checkbox is {message}...</h3>
+            </div>
+          );
+        }
+      }
+
+      ReactDOM.render(
+        <div>
+          <CheckBox />
+        </div>, document.getElementById('container'));
+    </script>
+</body>
+</html>
