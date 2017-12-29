@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Passing Functions a Props</title>
+    <script src="../../js/react.min.js"></script>
+    <script src="../../js/react-dom.min.js"></script>
+    <script src="../../js/browser.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../css/main.css">
+</head>
+<body>
+
+    <div id="container"></div>
+    <div>
+      <a href="https://www.youtube.com/watch?v=szmS_M-BMls&index=12&list=PL6gx4Cwl9DGBuKtLgPR_zWYnrwv-JllpA">
+        Same code without ES6
+      </a>
+    </div>
+
+    <script type="text/babel">
+
+    class Board extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          comments : [
+            'Comment Arr 1',
+            'Comment Arr 2',
+            'Comment Arr 3'
+          ]
+        };
+        this.removeComment = this.removeComment.bind(this);
+        this.updateComment = this.updateComment.bind(this);
+        this.populateComments = this.populateComments.bind(this);
+      }
+
+      removeComment(i) {
+        console.log('Removing comment - ' + i);
+        var newComments = this.state.comments;
+        newComments.splice(i, 1);
+        this.setState({ comments: newComments });
+      }
+
+      updateComment(newCommentText, i) {
+        console.log('Updating comment - ' + i + ' with ' + newCommentText);
+        var newComments = this.state.comments;
+        newComments[i] = newCommentText;
+        this.setState({ comments: newComments });
+      }
+
+      populateComments(commentText, i) {
+        return (
+          <Comment key={i} index={i} updateCommentMethod={this.updateComment} removeCommentMethod={this.removeComment} >
+            {commentText}
+          </Comment>
+        );
+      }
+
+      render() {
+        return(
+            <div className="board">
+            {this.state.comments.map(this.populateComments)}
+            </div>
+        );
+      }
+    }
+
+    class Comment extends React.Component {
+
+      constructor(props) {
+        super(props);
+        this.state = { editing: false };
+
+        //Method binding
+        this.edit = this.edit.bind(this);
+        this.remove = this.remove.bind(this);
+        this.save = this.save.bind(this);
+        this.cancel = this.cancel.bind(this);
+      }
+
+      edit() {
+        this.setState({ editing: true });
+      }
+
+      save() {
+        if(this.refs.userComment.value.length == 0) {
+          alert("Can't update empty text !!");
+        } else if (this.refs.userComment.value == this.props.children) {
+          alert("Can't update same text !!");
+        } else {
+          this.setState({ editing: false });
+          this.props.updateCommentMethod(this.refs.userComment.value, this.props.index);
+        }
+      }
+
+      cancel() {
+        this.setState({ editing: false });
+      }
+
+      remove() {
+        console.log('removing...');
+        this.props.removeCommentMethod(this.props.index);
+      }
+
+      renderNormalMode() {
+        return (
+          //className = class in HTML for CSS classes.
+          //'class' can't be used here since it is already a reserved word in JS.
+          <div className="commentContainer">
+            <div className="commentText">{this.props.children}</div>
+            <button className="button-primary" onClick={this.edit} >Edit</button>
+            <button className="button-danger" onClick={this.remove}>Remove</button>
+          </div>
+        );
+      }
+
+      renderEditMode() {
+        return (
+          //className = class in HTML for CSS classes.
+          //'class' can't be used here since it is already a reserved word in JS.
+
+          //refs : refs will allow to capture the text input by the user in a textarea.
+          //This helps in capturing text from a scenario where there are multiple textareas within a component.
+          //Or when there are multiple components as in this case.
+          //Can't use ID here since HTML would expect ID to be unique
+
+          <div className="commentContainer">
+            <textarea ref="userComment" defaultValue={this.props.children} />
+            <button className="button-success" onClick={this.save} >Save</button>
+            <button className="button-danger" onClick={this.cancel}>Cancel</button>
+          </div>
+        );
+      }
+
+      render() {
+        if(this.state.editing) {
+          return this.renderEditMode();
+        }
+        else {
+          return this.renderNormalMode();
+        }
+      }
+    }
+        ReactDOM.render(<Board />, document.getElementById('container'));
+    </script>
+</body>
+</html>
